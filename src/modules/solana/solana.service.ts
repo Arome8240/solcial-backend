@@ -19,7 +19,8 @@ export class SolanaService {
   constructor() {
     const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
     this.connection = new Connection(rpcUrl, 'confirmed');
-    this.ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
+    const encryptionKey = process.env.ENCRYPTION_KEY || '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+    this.ENCRYPTION_KEY = Buffer.from(encryptionKey, 'hex');
     
     this.logger.log(`Connected to Solana ${process.env.SOLANA_NETWORK || 'devnet'}`);
   }

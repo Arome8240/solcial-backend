@@ -139,8 +139,8 @@ export class AuthService {
 
     // Mark email as verified
     user.emailVerified = true;
-    user.verificationCode = undefined;
-    user.verificationCodeExpires = undefined;
+    user.verificationCode = null as any;
+    user.verificationCodeExpires = null as any;
     await user.save();
 
     return {
@@ -221,7 +221,7 @@ export class AuthService {
       followersCount: user.followersCount,
       followingCount: user.followingCount,
       postsCount: user.postsCount,
-      createdAt: user.createdAt,
+      createdAt: (user as any).createdAt,
     };
   }
 }
