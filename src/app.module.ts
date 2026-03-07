@@ -8,6 +8,10 @@ import { SolanaModule } from './modules/solana/solana.module';
 import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
+import { FollowsModule } from './modules/follows/follows.module';
+import { WalletModule } from './modules/wallet/wallet.module';
+import { ChatsModule } from './modules/chats/chats.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -20,6 +24,10 @@ import { PostsModule } from './modules/posts/posts.module';
     HealthModule,
     UsersModule,
     PostsModule,
+    FollowsModule,
+    WalletModule,
+    ChatsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
