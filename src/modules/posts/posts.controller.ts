@@ -106,4 +106,40 @@ export class PostsController {
       limit ? parseInt(limit) : 10,
     );
   }
+
+  @Post(':id/buy-token')
+  async buyPostToken(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Body() body: { amount: number },
+  ) {
+    return this.postsService.buyPostToken(id, req.user.userId, body.amount);
+  }
+
+  @Post(':id/tip')
+  async tipPost(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Body() body: { amount: number; message?: string },
+  ) {
+    return this.postsService.tipPost(id, req.user.userId, body.amount, body.message);
+  }
+
+  @Get(':id/tips')
+  async getPostTips(
+    @Param('id') id: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.postsService.getPostTips(
+      id,
+      page ? parseInt(page) : 1,
+      limit ? parseInt(limit) : 20,
+    );
+  }
+
+  @Get('portfolio/:userId')
+  async getUserPortfolio(@Param('userId') userId: string) {
+    return this.postsService.getUserPortfolio(userId);
+  }
 }

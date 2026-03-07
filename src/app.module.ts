@@ -12,6 +12,7 @@ import { FollowsModule } from './modules/follows/follows.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { ChatsModule } from './modules/chats/chats.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     WalletModule,
     ChatsModule,
     PaymentsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
