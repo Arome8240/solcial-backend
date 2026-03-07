@@ -46,6 +46,15 @@ export class User {
 
   @Prop({ default: 0 })
   postsCount: number;
+
+  @Prop()
+  expoPushToken: string;
+
+  @Prop({ default: 0 })
+  portfolioValue: number; // Total value of owned post tokens in SOL
+
+  @Prop({ default: 0 })
+  totalInvested: number; // Total SOL invested in post tokens
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

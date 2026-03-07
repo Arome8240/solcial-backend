@@ -23,17 +23,26 @@ export class Post {
   @Prop({ default: 0 })
   sharesCount: number;
 
+  @Prop({ default: 0 })
+  tipsCount: number;
+
+  @Prop({ default: 0 })
+  totalTipsAmount: number; // Total SOL received in tips
+
   @Prop({ default: false })
   isTokenized: boolean;
 
   @Prop()
   tokenMintAddress: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   tokenSupply: number;
 
-  @Prop()
-  tokenPrice: number;
+  @Prop({ default: 0 })
+  tokenPrice: number; // Current price in SOL
+
+  @Prop({ default: 0 })
+  tokenHolders: number; // Number of unique holders
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
