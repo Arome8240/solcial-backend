@@ -58,9 +58,11 @@ export class SolanaService {
    * Send SOL transaction
    */
   async sendTransaction(
+    fromAddress: string,
     fromEncryptedKey: string,
     toAddress: string,
     amount: number,
+    memo?: string,
   ): Promise<string> {
     try {
       // Decrypt and restore keypair
