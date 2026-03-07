@@ -22,6 +22,8 @@ pnpm install && pnpm run build
 pnpm run start:prod
 ```
 
+Note: The package.json has been updated to use `node dist/src/main` instead of `node dist/main` because NestJS outputs to `dist/src/` by default.
+
 5. Click "Save Changes"
 6. Go to "Manual Deploy" and click "Deploy latest commit"
 
