@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { SolanaModule } from './modules/solana/solana.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SolanaModule } from './modules/solana/solana.module';
     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/solcial'),
     AuthModule,
     SolanaModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

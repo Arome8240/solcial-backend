@@ -50,7 +50,7 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Indexes
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
-UserSchema.index({ walletAddress: 1 });
+// Remove duplicate indexes - unique: true already creates indexes
+// UserSchema.index({ email: 1 });
+// UserSchema.index({ username: 1 });
+// UserSchema.index({ walletAddress: 1 });
