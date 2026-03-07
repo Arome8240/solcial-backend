@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from '../../schemas/user.schema';
 import { SolanaService } from '../solana/solana.service';
+import { EmailService } from '../email/email.service';
 import { SignupDto } from './dto/signup.dto';
 import { SigninDto } from './dto/signin.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -23,6 +24,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
     private solanaService: SolanaService,
+    private emailService: EmailService,
   ) {}
 
   /**
@@ -77,13 +79,23 @@ export class AuthService {
     // Generate JWT token
     const token = this.generateToken(user._id.toString());
 
-    // TODO: Send verification email
-    this.logger.log(`Verification code for ${email}: ${verificationCode}`);
+    // Send verification email
+    try {
+      await this.emailService.sendVerificationEmail(
+        email,
+        verificationCode,
+        username,
+      );
+      this.logger.log(`Verification email sent to ${email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send verification email: ${error.message}`);
+      // Still log to console as fallback
+      this.logger.log(`Verification code for ${email}: ${verificationCode}`);
+    }
 
     return {
       user: this.sanitizeUser(user),
       token,
-      verificationCode, // Remove this in production
     };
   }
 
@@ -143,6 +155,18 @@ export class AuthService {
     user.verificationCodeExpires = null as any;
     await user.save();
 
+    // Send welcome email
+    try {
+      await this.emailService.sendWelcomeEmail(
+        user.email,
+        user.username,
+        user.walletAddress,
+      );
+      this.logger.log(`Welcome email sent to ${user.email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send welcome email: ${error.message}`);
+    }
+
     return {
       message: 'Email verified successfully',
       user: this.sanitizeUser(user),
@@ -170,12 +194,22 @@ export class AuthService {
     user.verificationCodeExpires = verificationCodeExpires;
     await user.save();
 
-    // TODO: Send verification email
-    this.logger.log(`New verification code for ${email}: ${verificationCode}`);
+    // Send verification email
+    try {
+      await this.emailService.sendVerificationEmail(
+        email,
+        verificationCode,
+        user.username,
+      );
+      this.logger.log(`Verification email resent to ${email}`);
+    } catch (error) {
+      this.logger.error(`Failed to resend verification email: ${error.message}`);
+      // Still log to console as fallback
+      this.logger.log(`New verification code for ${email}: ${verificationCode}`);
+    }
 
     return {
       message: 'Verification code sent',
-      verificationCode, // Remove this in production
     };
   }
 
