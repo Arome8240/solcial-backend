@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Follow, FollowDocument } from '../../schemas/follow.schema';
 import { User, UserDocument } from '../../schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class FollowsService {
   constructor(
     @InjectModel(Follow.name) private followModel: Model<FollowDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async followUser(followerId: string, followingId: string) {
@@ -38,6 +40,15 @@ export class FollowsService {
     // Update counts
     await this.userModel.findByIdAndUpdate(followerId, { $inc: { followingCount: 1 } });
     await this.userModel.findByIdAndUpdate(followingId, { $inc: { followersCount: 1 } });
+
+    // Send notification
+    const follower = await this.userModel.findById(followerId);
+    await this.notificationsService.createNotification({
+      recipient: followingId,
+      sender: followerId,
+      type: 'follow',
+      message: `${follower?.username} started following you`,
+    });
 
     return { message: 'User followed', isFollowing: true };
   }

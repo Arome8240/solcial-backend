@@ -190,6 +190,18 @@ export class PostsService {
     await this.likeModel.create({ user: userId, post: postId });
     await this.postModel.findByIdAndUpdate(postId, { $inc: { likesCount: 1 } });
 
+    // Send notification to post author
+    if (post.author.toString() !== userId) {
+      const liker = await this.userModel.findById(userId);
+      await this.notificationsService.createNotification({
+        recipient: post.author.toString(),
+        sender: userId,
+        type: 'like',
+        message: `${liker?.username} liked your post`,
+        post: postId,
+      });
+    }
+
     return { message: 'Post liked', isLiked: true };
   }
 
@@ -230,6 +242,18 @@ export class PostsService {
         createCommentDto.parentCommentId,
         { $inc: { repliesCount: 1 } },
       );
+    }
+
+    // Send notification to post author
+    if (post.author.toString() !== userId) {
+      const commenter = await this.userModel.findById(userId);
+      await this.notificationsService.createNotification({
+        recipient: post.author.toString(),
+        sender: userId,
+        type: 'comment',
+        message: `${commenter?.username} commented on your post`,
+        post: postId,
+      });
     }
 
     return this.populateComment(comment);
@@ -317,11 +341,11 @@ export class PostsService {
     }
 
     // Transfer SOL from buyer to seller
-    const signature = await this.solanaService.transferSol(
+    const signature = await this.solanaService.sendTransaction(
       buyer.walletAddress,
+      buyer.encryptedPrivateKey,
       seller.walletAddress,
       totalCost,
-      buyer.encryptedPrivateKey,
     );
 
     // Update or create token holder record
@@ -406,11 +430,11 @@ export class PostsService {
     }
 
     // Transfer SOL
-    const signature = await this.solanaService.transferSol(
+    const signature = await this.solanaService.sendTransaction(
       tipper.walletAddress,
+      tipper.encryptedPrivateKey,
       recipient.walletAddress,
       amount,
-      tipper.encryptedPrivateKey,
     );
 
     // Create tip record
